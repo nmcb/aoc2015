@@ -12,13 +12,13 @@ object Day05 extends App:
       .toList
 
   val answer1: Int =
-    val filter = for {
+    val valid = for {
       str <- strings
       if str.count("aeiou".toList.contains) >= 3
       if str.sliding(2).map(_.toArray).count(cs => cs(0) == cs(1)) >= 1
       if str.sliding(2).count(cs => cs == "ab" || cs == "cd" || cs == "pq" || cs == "xy") == 0
     } yield str
-    filter.size
+    valid.size
 
   println(s"Answer part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
