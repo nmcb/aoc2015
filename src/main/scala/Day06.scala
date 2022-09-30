@@ -27,9 +27,8 @@ object Day06 extends App:
           case "off"    => off)
         .foldLeft(init)((v,f) => f(v))
 
-    def exec(tasks: List[Task]): List[A] =
+    def run(tasks: List[Task]): List[A] =
       List.tabulate(1000, 1000)(exec(tasks)).flatten
-
 
   val input: List[Task] =
     def parser(s: String): Task =
@@ -54,7 +53,7 @@ object Day06 extends App:
     val off    = _ => false
 
   val start1: Long = System.currentTimeMillis
-  val answer1: Int = BooleanLights.exec(input).count(identity)
+  val answer1: Int = BooleanLights.run(input).count(identity)
 
   println(s"Answer part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
 
@@ -68,7 +67,7 @@ object Day06 extends App:
     val off    = v => if v <= 0 then 0 else v - 1
 
   val start2: Long = System.currentTimeMillis
-  val answer2: Int = IntLights.exec(input).sum
+  val answer2: Int = IntLights.run(input).sum
 
   println(s"Answer part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
 
