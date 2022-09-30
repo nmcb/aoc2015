@@ -20,7 +20,7 @@ object Day02 extends App:
 
   val boxes: List[Box] =
     Source
-      .fromFile("src/resources/input02.txt")
+      .fromFile("src/main/resources/input02.txt")
       .getLines
       .map{ case s"${l}x${h}x${w}" => Box(l.toInt, h.toInt, w.toInt) }
       .toList

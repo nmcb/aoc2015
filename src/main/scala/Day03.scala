@@ -7,7 +7,7 @@ object Day03 extends App:
 
   val commands: List[Char] =
     Source
-      .fromFile("src/resources/input03.txt")
+      .fromFile("src/main/resources/input03.txt")
       .mkString
       .trim
       .toList

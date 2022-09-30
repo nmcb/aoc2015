@@ -14,7 +14,7 @@ object Day06 extends App:
         case s"turn off $p0x,$p0y through $p1x,$p1y" => Task("off"   , Rec(p0x, p0y, p1x, p1y))
 
     Source
-      .fromFile("src/resources/input06.txt")
+      .fromFile("src/main/resources/input06.txt")
       .getLines
       .map(parser)
       .toList
