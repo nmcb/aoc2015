@@ -2,7 +2,8 @@ import scala.io.*
 
 object Day06 extends App:
 
-  /** input */
+
+  /** Input */
 
   case class Task(cmd: String, rec: Rec)
 
@@ -19,7 +20,8 @@ object Day06 extends App:
       .map(parser)
       .toList
 
-  /** modeling */
+
+  /** Modeling */
 
   case class Rec(x0: Int, y0: Int, x1: Int, y1: Int):
     def contains(x: Int, y: Int): Boolean =
