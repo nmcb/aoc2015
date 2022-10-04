@@ -56,7 +56,7 @@ object Day08 extends App:
   val start1: Long = System.currentTimeMillis
   val answer1: Int = input.map(str => str.quoted.size - str.unescaped.size).sum
 
-  println(s"Answer part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
+  println(s"Answer day 8 part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
 
 
   /** Part 2 */
@@ -64,10 +64,4 @@ object Day08 extends App:
   val start2: Long = System.currentTimeMillis
   val answer2: Int = input.map(str => str.escaped.size - str.quoted.size).sum
 
-  println(s"Answer part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
-
-
-  /** Solution assertions */
-
-  assert(answer1 == 1333, s"Wrong answer part 1: $answer1")
-  assert(answer2 == 2046, s"Wrong answer part 2: $answer2")
+  println(s"Answer day 8 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")

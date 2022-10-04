@@ -56,7 +56,7 @@ object Day06 extends App:
   val start1: Long = System.currentTimeMillis
   val answer1: Int = BooleanLights.run.count(identity)
 
-  println(s"Answer part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
+  println(s"Answer day 6 part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
 
 
   /** Part 2 */
@@ -70,10 +70,4 @@ object Day06 extends App:
   val start2: Long = System.currentTimeMillis
   val answer2: Int = IntLights.run.sum
 
-  println(s"Answer part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
-
-
-  /** Solution assertions */
-
-  assert(answer1 ==   569999, s"Wrong answer part 1: $answer1")
-  assert(answer2 == 17836115, s"Wrong answer part 2: $answer2")
+  println(s"Answer day 6 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")

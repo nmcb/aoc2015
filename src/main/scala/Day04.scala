@@ -16,9 +16,7 @@ object Day04 extends App:
   def hashMD5(s: String): String =
     def convertBytesToHex(bytes: Array[Byte]): String =
       val sb = new StringBuilder
-      for (b <- bytes) {
-        sb.append(String.format("%02x", Byte.box(b)))
-      }
+      for (b <- bytes)(sb.append(String.format("%02x", Byte.box(b))))
       sb.toString
     convertBytesToHex(MD5.digest(s.getBytes))
   
@@ -27,7 +25,7 @@ object Day04 extends App:
       if (hashMD5(secret + i.toString).startsWith("00000")) i else loop(i + 1)
     loop()
 
-  println(s"Answer part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
+  println(s"Answer day 4 part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
   val start2: Long =
     System.currentTimeMillis
@@ -37,4 +35,4 @@ object Day04 extends App:
       if (hashMD5(secret + l.toString).startsWith("000000")) l else loop(l + 1)
     loop()
   
-  println(s"Answer part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
+  println(s"Answer day 4 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")

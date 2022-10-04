@@ -35,7 +35,7 @@ object Day03 extends App:
       .values
       .size
 
-  println(s"Answer part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
+  println(s"Answer day 3 part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
   val start2: Long =
     System.currentTimeMillis
@@ -48,4 +48,4 @@ object Day03 extends App:
   val answer2: Int =
     (a1.houses ++ a2.houses).values.size
   
-  println(s"Answer part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
+  println(s"Answer day 3 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
