@@ -5,7 +5,7 @@ lazy val root =
              , name         := "aoc-2015"
              , version      := "0.1.0"
              , libraryDependencies ++= Seq(
-                 "org.scalacheck" %% "scalacheck" % "1.17.0" % "test"
+                 "org.scalatest"  %% "scalatest"  % "3.2.14" % "test"
                )
              )
 

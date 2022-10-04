@@ -20,7 +20,7 @@ object Day05 extends App:
     } yield str
     valid.size
 
-  println(s"Answer part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
+  println(s"Answer day 5 part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
   val start2: Long =
     System.currentTimeMillis
@@ -50,4 +50,4 @@ object Day05 extends App:
     } yield str
     filter.size
   
-  println(s"Answer part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
+  println(s"Answer day 5 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")

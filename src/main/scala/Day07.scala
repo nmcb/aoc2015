@@ -82,7 +82,7 @@ object Day07 extends App:
   val start1: Long = System.currentTimeMillis
   val answer1: Int = Solver.solve(input, "a")
 
-  println(s"Answer part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
+  println(s"Answer day 7 part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
 
 
   /** Part 2 */
@@ -90,10 +90,4 @@ object Day07 extends App:
   val start2: Long = System.currentTimeMillis
   val answer2: Int = Solver.solve(input, "a", setValueB = Some(answer1))
 
-  println(s"Answer part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
-
-
-  /** Solution assertions */
-
-  assert(answer1 ==   956, s"Wrong answer part 1: $answer1")
-  assert(answer2 == 40149, s"Wrong answer part 2: $answer2")
+  println(s"Answer day 7 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
