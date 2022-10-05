@@ -1,6 +1,6 @@
 import org.scalatest.funsuite.AnyFunSuite
 
-class SetSuite extends AnyFunSuite:
+class TestSolutions extends AnyFunSuite:
 
   test("Day01") {
     assertResult( 138)(actual = Day01.answer1)
@@ -15,8 +15,8 @@ class SetSuite extends AnyFunSuite:
     assertResult(2631)(actual = Day03.answer2)
   }
   test("Day04") {
-    assertResult( 282749)(actual = Day04.answer1) // 6s
-    assertResult(9962624)(actual = Day04.answer2) // 273s
+    assertResult( 282749)(actual = Day04.answer1) // takes 6s
+    assertResult(9962624)(actual = Day04.answer2) // takes 223s
   }
   test("Day05") {
     assertResult(258)(actual = Day05.answer1)
@@ -33,4 +33,8 @@ class SetSuite extends AnyFunSuite:
   test("Day08") {
     assertResult(1333)(actual = Day08.answer1)
     assertResult(2046)(actual = Day08.answer2)
+  }
+  test("Day09") {
+    assertResult(207)(actual = Day09.answer1)
+    assertResult(804)(actual = Day09.answer2)
   }

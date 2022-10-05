@@ -16,6 +16,6 @@ scalacOptions ++= Seq(
   "-language:existentials",
   "-unchecked",
   "-Werror",
-  "-explain",
+//  "-explain",
   "-deprecation"                
 )   
