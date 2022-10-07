@@ -3,19 +3,13 @@ import scala.io.*
 
 object Day10 extends App:
 
-  val start1: Long =
-    System.currentTimeMillis
-
   val day: String =
     this.getClass.getName.drop(3).init
 
   val input: String =
     "1113222113"
 
-
   @tailrec def solve(n: Int, str: String): String =
-
-    println(s"n=$n, length=${str.length} [${System.currentTimeMillis - start1}ms]")
 
     val res: StringBuilder = StringBuilder()
     var acc: StringBuilder = StringBuilder()
@@ -41,6 +35,7 @@ object Day10 extends App:
 
   /** Part 1 */
 
+  val start1: Long     = System.currentTimeMillis
   val output40: String = solve(40, input)
   val answer1: Int     = output40.length
   println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
