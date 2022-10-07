@@ -3,6 +3,9 @@ import scala.io.*
 
 object Day10 extends App:
 
+  val start1: Long =
+    System.currentTimeMillis
+
   val day: String =
     this.getClass.getName.drop(3).init
 
@@ -12,30 +15,35 @@ object Day10 extends App:
 
   @tailrec def solve(n: Int, str: String): String =
 
-    println(s"n=$n, length=${str.length} [${System.currentTimeMillis - start2}ms]")
+    println(s"n=$n, length=${str.length} [${System.currentTimeMillis - start1}ms]")
 
-    @tailrec def loop(todo: String, current: Char, acc: String, res: StringBuilder): String =
+    val res: StringBuilder = StringBuilder()
+    var acc: StringBuilder = StringBuilder()
+
+    @tailrec def build(todo: String, current: Char): String =
+
+      def encode(seq: String): String =
+        s"${seq.length}${seq.head.toString}"
+
       if todo.nonEmpty then
         if todo.head == current then
-          loop(todo.tail, current, todo.head.toString + acc, res)
+          acc.addOne(current)
+          build(todo.tail, current)
         else
-          loop(todo, todo.head, "", res ++= encode(acc))
+          res ++= encode(acc.result)
+          acc   = StringBuilder()
+          build(todo, todo.head)
       else
-        (res ++= encode(acc)).toString()
+        (res ++= encode(acc.result)).result
 
-    def encode(seq: String): String =
-      s"${seq.length}${seq.head.toString}"
-
-    if n == 0 then str
-    else solve(n - 1, loop(str, str.head, "", StringBuilder()))
+    if n == 0 then str else solve(n - 1, build(str, str.head))
 
 
   /** Part 1 */
 
-  val start1: Long = System.currentTimeMillis
   val output40: String = solve(40, input)
   val answer1: Int     = output40.length
-  println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1 / 1000}ms]")
+  println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
 
   /** Part 2 */

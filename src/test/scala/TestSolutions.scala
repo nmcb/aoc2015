@@ -14,7 +14,7 @@ class TestSolutions extends AnyFunSuite:
     assertResult(2572)(actual = Day03.answer1)
     assertResult(2631)(actual = Day03.answer2)
   }
-  ignore("Day04") {
+  test("Day04") {
     assertResult( 282749)(actual = Day04.answer1) // takes 6s
     assertResult(9962624)(actual = Day04.answer2) // takes 223s
   }
@@ -39,6 +39,11 @@ class TestSolutions extends AnyFunSuite:
     assertResult(804)(actual = Day09.answer2)
   }
   test("Day10") {
+<<<<<<< HEAD
     assertResult( 252594)(actual = Day10.answer1) // takes 12s
     assertResult(3579328)(actual = Day10.answer2) // takes 750s
+=======
+    assertResult( 252594)(actual = Day10.answer1)  // takes 12s
+    assertResult(3579328)(actual = Day10.answer2) // takes 800s
+>>>>>>> c3ab757 (uptimised performance)
   }
