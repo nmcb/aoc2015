@@ -6,116 +6,134 @@ object Day12 extends App:
   val day: String =
     this.getClass.getName.drop(3).init
 
-  val input: String =
-    "hxbxwxba"
+  /** Utilities */
+
+  case class P[A](parse: String => Option[(A,String)]):
+    def run(s: String): A =
+      parse(s) match
+        case Some(a,   "") => a
+        case Some(_, rest) => sys.error(s"unconsumed at ${rest.take(10)}")
+        case None          => sys.error(s"failed to parse")
+
+    def map[B](f: A => B): P[B] =
+      P(s => parse(s) match
+        case Some(a, r) => Some(f(a), r)
+        case None       => None
+      )
+
+    def flatMap[B](f: A => P[B]): P[B] =
+      P(s => parse(s) match
+        case Some(a, r) => f(a).parse(r)
+        case None       => None
+      )
+
+    private def loop(s: String, acc: List[A] = List.empty): (List[A], String) =
+      parse(s) match {
+        case None         => (acc.reverse, s)
+        case Some((a,ss)) => loop(ss, a :: acc)
+      }
+
+    def zeroOrMore: P[List[A]] =
+      P(s => Some(loop(s)))
+
+    def oneOrMore: P[List[A]] =
+      P(s => parse(s).flatMap((a,ss) => Some(loop(ss, List(a)))))
+
+    def |[A1 >: A](that: => P[A1]): P[A1] =
+      P(s => parse(s) match {
+        case None        => that.parse(s)
+        case res@Some(_) => res
+      })
+
+    def ~[B](that: P[B]): P[B] =
+      for { _ <- this ; b <- that } yield b
+
+  object P:
+    def unit[A](a: A): P[A] =
+      P(s => Some(a, s))
+
+    def fail[A]: P[A] =
+      P(_ => None)
+
+    def take: P[Char] =
+      P(s => if s.nonEmpty then Some(s.head, s.tail) else None)
+
+    def satisfy(p: Char => Boolean): P[Char] =
+      take.flatMap(c => if p(c) then unit(c) else fail)
+
+    def char(c: Char): P[Char] =
+      satisfy(_ == c)
+
+    def digit: P[Char] =
+      satisfy(_.isDigit)
+
+    def digits: P[Int] =
+      satisfy(_.isDigit).oneOrMore.map(_.mkString("").toInt)
+
+    def separated[A](sep: Char, pa: P[A]): P[List[A]] =
+      for { h <- pa ; t <- (char(sep) ~ pa).zeroOrMore } yield h :: t
+
 
   /** Modeling */
 
-  case class Dig(value: Char = 'a'):
-    import Dig.*
-    import Carry.*
+  object Json:
+    import P.*
 
-    assert((MinValue to MaxValue).contains(value), s"illegal digit value=${value.toInt}")
+    val string: P[String] =
+      for { _ <- char('"') ; s <- satisfy(_.isLetter).zeroOrMore ; _ <- char('"') } yield s.mkString
 
-    override def toString: String =
-      value.toString
+    val number: P[Int] =
+      (for { _ <- char('-') ; i <- digits } yield -i) | digits
 
-    def inc: Option[Dig] =
-      val (n, c) = inc(Zero)
-      if c == Zero then Some(n) else None
+    val member: P[(String,Json)] =
+      for { k <- string ; _ <- char(':') ; v <- json } yield (k,v)
 
-    def inc(carry: Carry = Zero): (Dig, Carry) =
-      assert(carry == Zero || carry == One)
-      val n = value + One.value + carry.value
-      ( if n <= MaxValue then copy(value = n.toChar) else copy(value = (n - ValueRange).toChar)
-      , if n <= MaxValue then Zero                   else One
-      )
+    val obj: P[Json] =
+      for { _ <- char('{') ; ms <- separated(',', member) ; _ <- char('}') } yield Obj(ms.toMap)
 
-  object Dig:
+    val arr: P[Json] =
+      for { _ <- char('[') ; es <- separated(',', json) ; _ <- char(']') } yield Arr(es)
 
-    enum Carry(val value: Int):
-      case Zero extends Carry(0x00)
-      case One  extends Carry(value = 0x01)
+    val num: P[Json] =
+      number.map(i => Num(i))
 
-    val MinValue: Char   = 'a'
-    val MaxValue: Char   = 'z'
-    val ValueRange: Char = (MaxValue - MinValue + 1).toChar
+    val str: P[Json] =
+      string.map(s => Str(s))
 
-    extension (c: Char) def toDig: Dig =
-      Dig(c)
+    val json: P[Json] =
+      arr | obj | num | str
 
+    def parse(s: String): Json =
+      json.run(s)
 
-  case class Password(num: Array[Dig]):
-    import Dig.*
-    import Carry.*
-    import Password.*
+  sealed trait Json
+  case class Str(underlying: String)           extends Json
+  case class Num(underlying: Int)              extends Json
+  case class Arr(underlying: List[Json])       extends Json
+  case class Obj(underlying: Map[String,Json]) extends Json
 
-    assert(num.size == 8)
-
-    override def toString: String =
-      num.mkString
-
-    @tailrec final def next: Password =
-      @tailrec def inc(todo: Array[Dig], carry: Carry = Zero, acc: Array[Dig] = Array.empty): (Array[Dig], Carry) =
-        if todo.isEmpty then
-          (acc, carry)
-        else
-          val (n, c) = todo.last.inc(carry)
-          if c == Zero then
-            (todo.init ++: n +: acc, Zero)
-          else
-            inc(todo.init, Zero, n +: acc)
-
-      val (n, c) = inc(num)
-      val result = if c == Zero then Password(n) else Password.empty
-      if result.valid then result else result.next
-
-    def includesIncreasingStraight: Boolean =
-      num
-        .sliding(3)
-        .exists(ds => ds(0).inc.contains(ds(1)) && ds(1).inc.contains(ds(2)))
-
-    def includesLegalCharacters: Boolean =
-      num.forall(d => d.value != 'i' && d.value != 'o' && d.value != 'l')
-
-    def includesNonOverlappingPair: Boolean =
-      def hasNonOverlappingPair(todo: String, foundFirst: Boolean = false): Boolean =
-        todo.toList match
-          case c0 :: c1 :: _ if c0 == c1 && foundFirst => true
-          case c0 :: c1 :: t if c0 == c1               => hasNonOverlappingPair(t.mkString, true)
-          case  _ :: rest                              => hasNonOverlappingPair(rest.mkString, foundFirst)
-          case Nil                                     => false
-
-      hasNonOverlappingPair(num.show)
-
-    def valid: Boolean =
-      includesIncreasingStraight && includesLegalCharacters && includesNonOverlappingPair
-
-  object Password:
-
-    import Dig.*
-
-    def empty: Password =
-      Password.fromString("aaaaaaaa")
-
-    def fromString(string: String): Password =
-      assert(string.length == 8)
-      assert(string.forall(('a' to 'z').contains))
-      Password(string.foldLeft(Array.empty[Dig])(_ :+ _.toDig))
-
-    extension (num: Array[Dig]) def show: String =
-      num.mkString
-
+  def ints(json: Json, p: List[Json] => Boolean = _ => true): List[Int] =
+    def loop(json: Option[Json], acc: List[Int] = List.empty): List[Int] =
+      json match
+        case None => acc
+        case Some(Str(_))  => acc
+        case Some(Num(i))  => i :: acc
+        case Some(Arr(es)) => es.flatMap(e => loop(Some(e))) ++: acc
+        case Some(Obj(ms)) => if p(ms.values.toList) then ms.values.flatMap(m => loop(Some(m))) ++: acc else acc
+    loop(Some(json))
 
   /** Part 1 */
 
+  val input: Json  =
+    Json.parse(Source.fromResource(s"input$day.txt").mkString.trim)
+
   val start1: Long = System.currentTimeMillis
-  val answer1: String = Password.fromString(input).next.toString
+  val answer1: Int = ints(input).sum
   println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
 
   /** Part 2 */
 
   val start2: Long = System.currentTimeMillis
-  val answer2: String = Password.fromString(answer1).next.toString
+  val answer2: Int = ints(input, ms => !ms.contains(Str("red"))).sum
   println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
