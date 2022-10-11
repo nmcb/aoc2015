@@ -1,7 +1,7 @@
 import scala.annotation.*
 import scala.io.*
 
-object Day11 extends App:
+object Day12 extends App:
 
   val day: String =
     this.getClass.getName.drop(3).init
