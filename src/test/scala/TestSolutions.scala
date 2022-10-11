@@ -50,6 +50,10 @@ class TestSolutions extends AnyFunSuite:
     assertResult(111754)(actual = Day12.answer1) // 10ms
     assertResult( 65402)(actual = Day12.answer2) //  2ms
   }
+  test("Day13 [1724ms]") {
+    assertResult(733)(actual = Day13.answer1) //  450ms
+    assertResult(725)(actual = Day13.answer2) // 1274ms
+  }
 
   /** Utilities */
 
