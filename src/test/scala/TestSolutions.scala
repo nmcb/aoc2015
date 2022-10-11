@@ -42,7 +42,24 @@ class TestSolutions extends AnyFunSuite:
     assertResult( 252594)(actual = Day10.answer1) //  12s
     assertResult(3579328)(actual = Day10.answer2) // 800s
   }
-  test("Day11") {
+  test("Day11 [2338ms]") {
     assertResult("hxbxxyzz")(actual = Day11.answer1) //  145ms
     assertResult("hxcaabcc")(actual = Day11.answer2) // 2193ms
+  }
+  test("Day12 [12ms]") {
+    assertResult(111754)(actual = Day12.answer1) // 10ms
+    assertResult( 65402)(actual = Day12.answer2) //  2ms
+  }
+
+  /** Utilities */
+
+  test("Day12 - Json.parse") {
+    import Day12.*
+    assertResult(Num(12))(actual = Json.parse("12"))
+    assertResult(Num(-1))(actual = Json.parse("-1"))
+    assertResult(Str(""))(actual = Json.parse("\"\""))
+    assertResult(Str("a"))(actual = Json.parse("\"a\""))
+    assertResult(Str("ab"))(actual = Json.parse("\"ab\""))
+    assertResult(Arr(List(Num(1),Obj(Map("a" -> Num(1),"b" -> Num(2))))))(actual = Json.parse("""[1,{"a":1,"b":2}]"""))
+    assertResult(Obj(Map("a" -> Num(1),"b" -> Arr(List(Num(1),Num(2))))))(actual = Json.parse("""{"a":1,"b":[1,2]}"""))
   }

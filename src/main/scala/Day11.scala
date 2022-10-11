@@ -44,7 +44,7 @@ object Day11 extends App:
     extension (c: Char) def toDig: Dig =
       Dig(c)
 
-  
+
   case class Password(num: Array[Dig]):
     import Dig.*
     import Carry.*
