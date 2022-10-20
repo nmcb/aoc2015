@@ -12,26 +12,51 @@ object Day03 extends App:
       .trim
       .toList
 
-  case class Loc(x: Int, y: Int)
+  case class Area(start: Area.Loc = Area.Loc.init, deliveries: Area.Deliveries = Area.Deliveries.init):
 
-  case class Area(cur: Loc = Loc(0, 0), houses: Map[Loc,Int] = Map(Loc(0, 0) -> 1)):
+    private def moveToAndDeliver(loc: Area.Loc): Ar ea =
+      copy(start = loc, deliveries = deliveries.add(loc))
 
-    private def moveTo(l: Loc): Area =
-      houses.get(l) match
-        case Some(c) => copy(cur = l, houses = houses.updated(l, c + 1))
-        case None    => copy(cur = l, houses = houses + (l -> 1))
+    def next(cmd: Area.Command): Area =
+      cmd match
+        case '>' => moveToAndDeliver(start.copy(x = start.x + 1))
+        case '<' => moveToAndDeliver(start.copy(x = start.x - 1))
+        case '^' => moveToAndDeliver(start.copy(y = start.y + 1))
+        case 'v' => moveToAndDeliver(start.copy(y = start.y - 1))
 
-    def next(c: Char): Area =
-      c match
-        case '>' => { val loc = cur.copy(x = cur.x + 1) ; moveTo(loc) }
-        case '<' => { val loc = cur.copy(x = cur.x - 1) ; moveTo(loc) }
-        case '^' => { val loc = cur.copy(y = cur.y + 1) ; moveTo(loc) }
-        case 'v' => { val loc = cur.copy(y = cur.y - 1) ; moveTo(loc) }
-      
+  object Area:
+
+    case class Loc(x: Int, y: Int)
+
+    object Loc:
+      def init: Loc =
+        Loc(0, 0)
+
+    type Deliveries = Map[Loc,Int]
+
+    object Deliveries:
+
+      def empty: Deliveries =
+        Map.empty
+
+      def init: Deliveries =
+        empty.add(Loc.init)
+
+    extension (d: Deliveries) def add(loc: Loc): Deliveries =
+      d.updatedWith(loc)(_.orElse(Some(0)).map(_ + 1))
+
+    type Command = Char
+
+    def init: Area =
+      Area(start = Area.Loc.init, deliveries = Area.Deliveries.init)
+
+
+
+
   val answer1: Int =
     commands
-      .foldLeft(Area())((a,c) => a.next(c))
-      .houses
+      .foldLeft(Area.init)(_ next _)
+      .deliveries
       .values
       .size
 
@@ -40,12 +65,14 @@ object Day03 extends App:
   val start2: Long =
     System.currentTimeMillis
 
-  val (a1, a2) =
+  val (robot, santa) =
     commands
       .zipWithIndex
-      .foldLeft((Area(),Area())){ case (a,(c,i)) => if (i % 2 != 0) (a._1.next(c), a._2) else (a._1, a._2.next(c)) }
+      .foldLeft((Area.init, Area.init)) { case ((robot, santa), (command, index)) =>
+        if (index % 2 != 0) (robot next command, santa) else (robot, santa next command)
+      }
 
   val answer2: Int =
-    (a1.houses ++ a2.houses).values.size
+    (robot.deliveries ++ santa.deliveries).values.size
   
   println(s"Answer day 3 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
