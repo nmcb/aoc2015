@@ -14,7 +14,7 @@ object Day03 extends App:
 
   case class Area(start: Area.Loc = Area.Loc.init, deliveries: Area.Deliveries = Area.Deliveries.init):
 
-    private def moveToAndDeliver(loc: Area.Loc): Ar ea =
+    private def moveToAndDeliver(loc: Area.Loc): Area =
       copy(start = loc, deliveries = deliveries.add(loc))
 
     def next(cmd: Area.Command): Area =
