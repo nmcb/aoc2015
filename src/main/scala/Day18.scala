@@ -10,20 +10,19 @@ object Day18 extends App:
   case class Light(underlying: Char):
     assert(underlying == '#' || underlying == '.')
 
+    import Light.*
+
     def isOn:  Boolean = underlying == '#'
     def isOff: Boolean = underlying == '.'
 
-    def next(neighbours: List[Light]): Light =
-      val n = neighbours.count(_.isOn)
-
+    def next(count: Int): Light =
       if isOn then
-        if n == 2 || n == 3 then Light.on else Light.off
+        if count == 2 || count == 3 then on else off
       else
-        if n == 3 then Light.on else Light.off
+        if count == 3 then on else off
 
 
   object Light:
-
     val on: Light  = Light('#')
     val off: Light = Light('.')
 
@@ -34,7 +33,6 @@ object Day18 extends App:
   type Row = List[Light]
 
   object Row:
-
     def empty: Row =
       List.empty[Light]
 
@@ -42,7 +40,6 @@ object Day18 extends App:
   type Conf = List[Row]
 
   object Conf:
-
     def empty: Conf =
       List.empty[Row]
 
@@ -64,12 +61,14 @@ object Day18 extends App:
       (minY to maxY).foldLeft(zero)((z,y) =>
         (minX to maxX).foldLeft(inc(z))((z,x) =>
           f(x,y,z)))
-    
+
     def mkString: String =
-      fold("")(_ + "\n")((x,y,str) => str + light(x,y).underlying) + "\n"
+      def combine(x: Int, y: Int, s: String) = s + light(x,y).underlying
+      fold("")(_ + "\n")(combine) + "\n"
 
     def count: Int =
-      fold(0)(identity)((x,y,n) => if light(x, y).isOn then n + 1 else n)
+      def combine(x: Int, y: Int, count: Int) = if light(x, y).isOn then count + 1 else count
+      fold(0)(identity)(combine)
 
     def light(x: Int, y: Int): Light =
       if overlay(y, x) then on else conf(y)(x)
@@ -81,10 +80,10 @@ object Day18 extends App:
         .map(light)
 
     def next: Grid =
-      val step: Conf =
-        fold(Conf.empty)(_ :+ Row.empty)((x,y,conf) =>
-          conf.init :+ (conf.last :+ light(x,y).next(neighbours(x,y))))
-      copy(conf = step)
+      def combine(x: Int, y: Int, conf: Conf) =
+        val count = neighbours(x,y).filter(_.isOn).size
+        conf.init :+ (conf.last :+ light(x,y).next(count))
+      copy(conf = fold(Conf.empty)(_ :+ Row.empty)(combine))
 
     def animate(steps: Int, grid: Grid = this): Grid =
       if steps <= 0 then grid else animate(steps = steps - 1, grid = grid.next)
