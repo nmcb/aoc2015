@@ -2,6 +2,9 @@ import scala.io._
 
 object Day04 extends App:
 
+  val day: String =
+    this.getClass.getName.drop(3).init
+
   val start1: Long =
     System.currentTimeMillis
 
@@ -25,7 +28,7 @@ object Day04 extends App:
       if (hashMD5(secret + i.toString).startsWith("00000")) i else loop(i + 1)
     loop()
 
-  println(s"Answer day 4 part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
+  println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
   val start2: Long =
     System.currentTimeMillis
@@ -35,4 +38,4 @@ object Day04 extends App:
       if (hashMD5(secret + l.toString).startsWith("000000")) l else loop(l + 1)
     loop()
   
-  println(s"Answer day 4 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
+  println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
