@@ -15,11 +15,13 @@ object Day18 extends App:
     def isOn:  Boolean = underlying == '#'
     def isOff: Boolean = underlying == '.'
 
-    def next(count: Int): Light =
+    def next(neighbours: List[Light]): Light =
+      val n = neighbours.count(_.isOn)
+
       if isOn then
-        if count == 2 || count == 3 then on else off
+        if n == 2 || n == 3 then on else off
       else
-        if count == 3 then on else off
+        if n == 3 then on else off
 
 
   object Light:
@@ -63,12 +65,10 @@ object Day18 extends App:
           f(x,y,z)))
 
     def mkString: String =
-      def combine(x: Int, y: Int, s: String) = s + light(x,y).underlying
-      fold("")(_ + "\n")(combine) + "\n"
+      fold("")(_ + "\n")((x,y,str) => str + light(x,y).underlying) + "\n"
 
     def count: Int =
-      def combine(x: Int, y: Int, count: Int) = if light(x, y).isOn then count + 1 else count
-      fold(0)(identity)(combine)
+      fold(0)(identity)((x,y,n) => if light(x, y).isOn then n + 1 else n)
 
     def light(x: Int, y: Int): Light =
       if overlay(y, x) then on else conf(y)(x)
@@ -80,10 +80,10 @@ object Day18 extends App:
         .map(light)
 
     def next: Grid =
-      def combine(x: Int, y: Int, conf: Conf) =
-        val count = neighbours(x,y).filter(_.isOn).size
-        conf.init :+ (conf.last :+ light(x,y).next(count))
-      copy(conf = fold(Conf.empty)(_ :+ Row.empty)(combine))
+      val step: Conf =
+        fold(Conf.empty)(_ :+ Row.empty)((x,y,conf) =>
+          conf.init :+ (conf.last :+ light(x,y).next(neighbours(x,y))))
+      copy(conf = step)
 
     def animate(steps: Int, grid: Grid = this): Grid =
       if steps <= 0 then grid else animate(steps = steps - 1, grid = grid.next)
