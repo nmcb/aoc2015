@@ -6,37 +6,37 @@ class TestSolutions extends AnyFunSuite:
     assertResult( 138)(actual = Day01.answer1) // 1ms
     assertResult(1771)(actual = Day01.answer2) // 2ms
   }
-  test("Day02") {
-    assertResult(1606483)(actual = Day02.answer1)
-    assertResult(3842356)(actual = Day02.answer2)
+  test("Day02 [5ms]") {
+    assertResult(1606483)(actual = Day02.answer1) // 3ms
+    assertResult(3842356)(actual = Day02.answer2) // 2ms
   }
-  test("Day03") {
-    assertResult(2572)(actual = Day03.answer1)
-    assertResult(2631)(actual = Day03.answer2)
+  test("Day03 [34ms]") {
+    assertResult(2572)(actual = Day03.answer1) // 24ms
+    assertResult(2631)(actual = Day03.answer2) // 10ms
   }
   ignore("Day04 [229s]") {
     assertResult( 282749)(actual = Day04.answer1)   // 6s
     assertResult(9962624)(actual = Day04.answer2) // 223s
   }
-  test("Day05") {
-    assertResult(258)(actual = Day05.answer1)
-    assertResult( 53)(actual = Day05.answer2)
+  test("Day05 [21ms]") {
+    assertResult(258)(actual = Day05.answer1) // 12ms
+    assertResult( 53)(actual = Day05.answer2) //  9ms
   }
-  test("Day06") {
-    assertResult(  569999)(actual = Day06.answer1)
-    assertResult(17836115)(actual = Day06.answer2)
+  test("Day06 [4s]") {
+    assertResult(  569999)(actual = Day06.answer1) // 2043ms
+    assertResult(17836115)(actual = Day06.answer2) // 1953ms
   }
-  test("Day07") {
-    assertResult(   956)(actual = Day07.answer1)
-    assertResult( 40149)(actual = Day07.answer2)
+  test("Day07 [41ms]") {
+    assertResult(   956)(actual = Day07.answer1) // 21ms
+    assertResult( 40149)(actual = Day07.answer2) // 20ms
   }
-  test("Day08") {
-    assertResult(1333)(actual = Day08.answer1)
-    assertResult(2046)(actual = Day08.answer2)
+  test("Day08 [5ms]") {
+    assertResult(1333)(actual = Day08.answer1) // 2ms
+    assertResult(2046)(actual = Day08.answer2) // 3ms
   }
-  test("Day09") {
-    assertResult(207)(actual = Day09.answer1)
-    assertResult(804)(actual = Day09.answer2)
+  test("Day09 [204ms]") {
+    assertResult(207)(actual = Day09.answer1) // 202ms
+    assertResult(804)(actual = Day09.answer2) //   2ms
   }
   ignore("Day10 [812s]") {
     assertResult( 252594)(actual = Day10.answer1) //  12s

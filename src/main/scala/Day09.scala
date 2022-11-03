@@ -94,7 +94,7 @@ object Day09 extends App:
         case line: String => sys.error(s"could not parse '$line'")
 
     Source
-      .fromFile(data)
+      .fromResource(s"input$day.txt")
       .getLines
       .flatMap(parser)
       .toList

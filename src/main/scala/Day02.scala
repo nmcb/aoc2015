@@ -2,6 +2,9 @@ import scala.io._
 
 object Day02 extends App:
 
+  val day: String =
+    this.getClass.getName.drop(3).init
+
   val start1: Long =
     System.currentTimeMillis
 
@@ -20,7 +23,7 @@ object Day02 extends App:
 
   val boxes: List[Box] =
     Source
-      .fromFile("src/main/resources/input02.txt")
+      .fromResource(s"input$day.txt")
       .getLines
       .map{ case s"${l}x${h}x${w}" => Box(l.toInt, h.toInt, w.toInt) }
       .toList
@@ -28,7 +31,7 @@ object Day02 extends App:
   val answer1: Int =
     boxes.map(b => b.area + b.slack).sum
   
-  println(s"Answer day 2 part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
+  println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
   val start2: Long =
     System.currentTimeMillis
@@ -36,4 +39,4 @@ object Day02 extends App:
   val answer2: Int =
     boxes.map(b => b.volume + b.wrap).sum
   
-  println(s"Answer day 2 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
+  println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")

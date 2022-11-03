@@ -3,6 +3,9 @@ import scala.io.*
 
 object Day08 extends App:
 
+  val day: String =
+    this.getClass.getName.drop(3).init
+
   /** Modeling */
 
   case class Str(quoted: String):
@@ -45,7 +48,7 @@ object Day08 extends App:
         case str: String => sys.error(s"could not parse '$str'")
 
     Source
-      .fromFile(s"src/main/resources/input${Day08.getClass.getName.drop(3).init}.txt")
+      .fromResource(s"input$day.txt")
       .getLines
       .map(parser)
       .toIndexedSeq
@@ -56,7 +59,7 @@ object Day08 extends App:
   val start1: Long = System.currentTimeMillis
   val answer1: Int = input.map(str => str.quoted.size - str.unescaped.size).sum
 
-  println(s"Answer day 8 part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
+  println(s"Answer day $day part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
 
 
   /** Part 2 */
@@ -64,4 +67,4 @@ object Day08 extends App:
   val start2: Long = System.currentTimeMillis
   val answer2: Int = input.map(str => str.escaped.size - str.quoted.size).sum
 
-  println(s"Answer day 8 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
+  println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")

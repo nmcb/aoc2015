@@ -2,6 +2,9 @@ import scala.io.*
 
 object Day06 extends App:
 
+  val day: String =
+    this.getClass.getName.drop(3).init
+
   /** Modeling */
 
   case class Task(inst: String, x0: Int, y0: Int, x1: Int, y1: Int)
@@ -39,11 +42,10 @@ object Day06 extends App:
         case s"turn off $p0x,$p0y through $p1x,$p1y" => Task("off"   , p0x, p0y, p1x, p1y)
 
     Source
-      .fromFile("src/main/resources/input06.txt")
+      .fromResource(s"input$day.txt")
       .getLines
       .map(parser)
       .toList
-
 
   /** Part 1 */
 
@@ -56,7 +58,7 @@ object Day06 extends App:
   val start1: Long = System.currentTimeMillis
   val answer1: Int = BooleanLights.run.count(identity)
 
-  println(s"Answer day 6 part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
+  println(s"Answer day $day part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
 
 
   /** Part 2 */
@@ -70,4 +72,4 @@ object Day06 extends App:
   val start2: Long = System.currentTimeMillis
   val answer2: Int = IntLights.run.sum
 
-  println(s"Answer day 6 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
+  println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")

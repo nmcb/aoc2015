@@ -2,12 +2,15 @@ import scala.io._
 
 object Day03 extends App:
 
+  val day: String =
+    this.getClass.getName.drop(3).init
+
   val start1: Long =
     System.currentTimeMillis
 
   val commands: List[Char] =
     Source
-      .fromFile("src/main/resources/input03.txt")
+      .fromResource(s"input$day.txt")
       .mkString
       .trim
       .toList
@@ -50,9 +53,6 @@ object Day03 extends App:
     def init: Area =
       Area(start = Area.Loc.init, deliveries = Area.Deliveries.init)
 
-
-
-
   val answer1: Int =
     commands
       .foldLeft(Area.init)(_ next _)
@@ -60,7 +60,7 @@ object Day03 extends App:
       .values
       .size
 
-  println(s"Answer day 3 part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
+  println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
   val start2: Long =
     System.currentTimeMillis
@@ -75,4 +75,4 @@ object Day03 extends App:
   val answer2: Int =
     (robot.deliveries ++ santa.deliveries).values.size
   
-  println(s"Answer day 3 part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
+  println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")

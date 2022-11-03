@@ -10,6 +10,8 @@ object Day18 extends App:
   case class Light(underlying: Char):
     assert(underlying == '#' || underlying == '.')
 
+    import Light.*
+
     def isOn:  Boolean = underlying == '#'
     def isOff: Boolean = underlying == '.'
 
@@ -17,13 +19,12 @@ object Day18 extends App:
       val n = neighbours.count(_.isOn)
 
       if isOn then
-        if n == 2 || n == 3 then Light.on else Light.off
+        if n == 2 || n == 3 then on else off
       else
-        if n == 3 then Light.on else Light.off
+        if n == 3 then on else off
 
 
   object Light:
-
     val on: Light  = Light('#')
     val off: Light = Light('.')
 
@@ -34,7 +35,6 @@ object Day18 extends App:
   type Row = List[Light]
 
   object Row:
-
     def empty: Row =
       List.empty[Light]
 
@@ -42,7 +42,6 @@ object Day18 extends App:
   type Conf = List[Row]
 
   object Conf:
-
     def empty: Conf =
       List.empty[Row]
 
@@ -64,7 +63,7 @@ object Day18 extends App:
       (minY to maxY).foldLeft(zero)((z,y) =>
         (minX to maxX).foldLeft(inc(z))((z,x) =>
           f(x,y,z)))
-    
+
     def mkString: String =
       fold("")(_ + "\n")((x,y,str) => str + light(x,y).underlying) + "\n"
 
