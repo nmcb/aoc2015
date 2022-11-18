@@ -27,17 +27,17 @@ object Day12 extends App:
         case None       => None
       )
 
-    private def loop(s: String, acc: List[A] = List.empty): (List[A], String) =
+    private def loop(s: String, acc: Seq[A] = Seq.empty): (Seq[A], String) =
       parse(s) match {
         case None         => (acc.reverse, s)
-        case Some((a,ss)) => loop(ss, a :: acc)
+        case Some((a,ss)) => loop(ss, a +: acc)
       }
 
-    def zeroOrMore: P[List[A]] =
+    def zeroOrMore: P[Seq[A]] =
       P(s => Some(loop(s)))
 
-    def oneOrMore: P[List[A]] =
-      P(s => parse(s).flatMap((a,ss) => Some(loop(ss, List(a)))))
+    def oneOrMore: P[Seq[A]] =
+      P(s => parse(s).flatMap((a,ss) => Some(loop(ss, Seq(a)))))
 
     def |[A1 >: A](that: => P[A1]): P[A1] =
       P(s => parse(s) match {
@@ -70,8 +70,8 @@ object Day12 extends App:
     def digits: P[Int] =
       satisfy(_.isDigit).oneOrMore.map(_.mkString("").toInt)
 
-    def separated[A](sep: Char, pa: P[A]): P[List[A]] =
-      for { h <- pa ; t <- (char(sep) ~ pa).zeroOrMore } yield h :: t
+    def separated[A](sep: Char, pa: P[A]): P[Seq[A]] =
+      for { h <- pa ; t <- (char(sep) ~ pa).zeroOrMore } yield h +: t
 
 
   /** Modeling */
@@ -109,17 +109,17 @@ object Day12 extends App:
   sealed trait Json
   case class Str(underlying: String)           extends Json
   case class Num(underlying: Int)              extends Json
-  case class Arr(underlying: List[Json])       extends Json
+  case class Arr(underlying: Seq[Json])       extends Json
   case class Obj(underlying: Map[String,Json]) extends Json
 
-  def ints(json: Json, p: List[Json] => Boolean = _ => true): List[Int] =
-    def loop(json: Option[Json], acc: List[Int] = List.empty): List[Int] =
+  def ints(json: Json, p: Seq[Json] => Boolean = _ => true): Seq[Int] =
+    def loop(json: Option[Json], acc: Seq[Int] = Seq.empty): Seq[Int] =
       json match
         case None => acc
         case Some(Str(_))  => acc
-        case Some(Num(i))  => i :: acc
+        case Some(Num(i))  => i +: acc
         case Some(Arr(es)) => es.flatMap(e => loop(Some(e))) ++: acc
-        case Some(Obj(ms)) => if p(ms.values.toList) then ms.values.flatMap(m => loop(Some(m))) ++: acc else acc
+        case Some(Obj(ms)) => if p(ms.values.toSeq) then ms.values.flatMap(m => loop(Some(m))) ++: acc else acc
     loop(Some(json))
 
   /** Part 1 */
