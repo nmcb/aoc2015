@@ -1,13 +1,12 @@
 lazy val root =
   project
     .in(file("."))
-    .settings( scalaVersion := "3.2.1"
-             , name         := "aoc-2015"
-             , version      := "0.1.0"
-             , libraryDependencies ++= Seq(
-                 "org.scalatest"  %% "scalatest"  % "3.2.14" % "test"
-               )
-             )
+    .settings( scalaVersion           := "3.2.0"
+             , name                   := "aoc-2015"
+             , version                := "0.1.0"
+             , libraryDependencies   ++= Library.testDependencies
+             , Compile/run/mainClass  := Main.className
+    )
 
 scalacOptions ++= Seq(       
   "-encoding", "utf8",        
@@ -19,3 +18,4 @@ scalacOptions ++= Seq(
   "-deprecation",
 //  "-explain",
 )
+

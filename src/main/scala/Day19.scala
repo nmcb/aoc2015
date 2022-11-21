@@ -1,3 +1,5 @@
+import scala.annotation.*
+
 object Day19 extends App:
 
   import scala.io.*
@@ -57,6 +59,7 @@ object Day19 extends App:
       .toSeq
       .groupMap(_._1)(_._2)
 
+  @tailrec
   def calibrate(todo: Seq[Mol], done: Seq[Mol] = Seq.empty, found: Set[Seq[Mol]] = Set.empty): Set[Seq[Mol]] =
     todo match
       case m :: ms if replacements.contains(m) =>
@@ -69,44 +72,47 @@ object Day19 extends App:
   val answer1 =
     calibrate(molecules).size
 
+  println(s"Answer day $day part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
 
-  println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
-
+  assert(answer1 == 535)
 
   /** Part 2 */
 
   val start2: Long =
     System.currentTimeMillis
 
-  val generators: Map[Seq[Mol],Mol] =
+  val generators: Map[Mol,Mol] =
     Source
       .fromResource(s"input$day.txt")
       .getLines
-      .map { case s"$molecule => $replacement" => Molecules.parser.run(replacement) -> molecule }
+      .map { case s"$molecule => $replacement" => replacement -> molecule }
       .toMap
 
-  def replace(from: (Seq[Mol],Mol), seq: Seq[Mol], cur: Int = 0, acc: Set[Seq[Mol]] = Set.empty): Set[Seq[Mol]] =
-    seq.indexOfSlice(from._1, cur) match {
+  var found: Map[Mol, Seq[Mol]] =
+    Map.empty
+
+  @tailrec
+  def replace(replacement: (Mol,Mol), seq: Mol, cur: Int = 0, acc: Set[Mol] = Set.empty): Set[Mol] =
+    val (from, to) = replacement
+    seq.indexOfSlice(from, cur) match {
       case -1 => acc
-      case  i => replace(from, seq, i + 1, acc + (seq.slice(0, i) :+ from._2 :++ seq.slice(i + from._1.length, seq.length)))
+      case  i => replace(replacement, seq, i + 1, acc + (seq.slice(0, i) + to + seq.substring(i + from.length)))
     }
 
-  def predecessors(seq: Seq[Mol]): Set[Seq[Mol]] =
-    generators.map(replace(_, seq)).foldLeft(Set.empty[Seq[Mol]])(_ ++ _)
+  def predecessors(seq: Mol): Set[Mol] =
+    generators.map(replace(_, seq)).foldLeft(Set.empty[Mol])(_ ++ _)
 
-  def find(seq: Seq[Mol]): Int =
-    def go(count: Int, todo: Seq[Mol]): Option[Int] =
-      def nonEmptyTraces: PartialFunction[Seq[Mol],Option[Int]] =
-        s => go(count + 1, s) match
+  def findGenerationDepth(seq: Mol): Int =
+    def go(todo: Mol, count: Int = 0): Option[Int] =
+      def nonEmptyTraces: PartialFunction[Mol,Option[Int]] =
+        s => go(s, count + 1) match
           case c : Some[Int] => c
       todo match
-          case Seq()            => None
-          case Seq(Molecules.E) => println(s"found count=$count") ; Some(count)
-          case _                => predecessors(todo).collect(nonEmptyTraces).head
-    go(0, seq).head
+          case ""            => None
+          case Molecules.E   => println(s"found depth=$count") ; Some(count)
+          case _             => predecessors(todo).collect(nonEmptyTraces).head
+    go(seq).head
 
 
-  val answer2: Int =
-    find(molecules)
-
-  println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
+  lazy val answer2: Int = findGenerationDepth(molecules.mkString("")) // doesn't terminate - performance ???
+  //  println(s"Answer day $day part 2: $answer2 [${System.currentTimeMillis - start2}ms]")
