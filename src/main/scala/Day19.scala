@@ -34,7 +34,6 @@ object Day19 extends App:
   val molecules: Seq[Mol] =
     Molecules
       .parser
-//      .run("HOHOHO")
       .run("CRnCaCaCaSiRnBPTiMgArSiRnSiRnMgArSiRnCaFArTiTiBSiThFYCaFArCa" +
            "CaSiThCaPBSiThSiThCaCaPTiRnPBSiThRnFArArCaCaSiThCaSiThSiRnMg" +
            "ArCaPTiBPRnFArSiThCaSiRnFArBCaSiRnCaPRnFArPMgYCaFArCaPTiTiTi" +
@@ -70,6 +69,7 @@ object Day19 extends App:
   val answer1 =
     calibrate(molecules).size
 
+
   println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
 
@@ -91,18 +91,8 @@ object Day19 extends App:
       case  i => replace(from, seq, i + 1, acc + (seq.slice(0, i) :+ from._2 :++ seq.slice(i + from._1.length, seq.length)))
     }
 
-//uniquePredecessors :: [(String, String)] -> String -> HashSet String
-//uniquePredecessors reps src = S.fromList $ concat [ singleReplacements v k src | (k, v) <- reps]
-
   def predecessors(seq: Seq[Mol]): Set[Seq[Mol]] =
     generators.map(replace(_, seq)).foldLeft(Set.empty[Seq[Mol]])(_ ++ _)
-
-//findPathToElectron :: [(String, String)] -> String -> Int
-//findPathToElectron reps = fromJust . go 0
-//  where go c []   = Nothing
-//        go c "e" = Just c
-//        go c s   = listToMaybe . mapMaybe (go (c+1))
-//                   . S.toList $ uniquePredecessors reps s
 
   def find(seq: Seq[Mol]): Int =
     def go(count: Int, todo: Seq[Mol]): Option[Int] =
