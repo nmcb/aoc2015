@@ -51,8 +51,8 @@ object Day21 extends App:
     import Outcome.*
 
     def play: Outcome =
-      val newPointsP = player.points - (if boss.damage - player.armor >= 0 then boss.damage - player.armor else 0)
-      val newPointsB =   boss.points - (if player.damage - boss.armor >= 0 then player.damage - boss.armor else 0)
+      val newPointsP = player.points - (if boss.damage - player.armor >= 1 then boss.damage - player.armor else 1)
+      val newPointsB =   boss.points - (if player.damage - boss.armor >= 1 then player.damage - boss.armor else 1)
 
       if      newPointsB <= 0 then Won
       else if newPointsP <= 0 then Lost
