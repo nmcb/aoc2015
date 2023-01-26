@@ -8,7 +8,7 @@ object Day12 extends App:
 
   /** Utilities */
 
-  case class P[A](parse: String => Option[(A,String)]):
+  case class P[+A](parse: String => Option[(A,String)]):
     def run(s: String): A =
       parse(s) match
         case Some(a,   "") => a
@@ -45,7 +45,7 @@ object Day12 extends App:
         case res@Some(_) => res
       })
 
-    def ~[B](that: P[B]): P[B] =
+    def ~[B](that: => P[B]): P[B] =
       for { _ <- this ; b <- that } yield b
 
   object P:
@@ -68,9 +68,9 @@ object Day12 extends App:
       satisfy(_.isDigit)
 
     def digits: P[Int] =
-      satisfy(_.isDigit).oneOrMore.map(_.mkString("").toInt)
+      digit.oneOrMore.map(_.mkString("").toInt)
 
-    def separated[A](sep: Char, pa: P[A]): P[List[A]] =
+    def separated[A](sep: Char, pa: => P[A]): P[List[A]] =
       for { h <- pa ; t <- (char(sep) ~ pa).zeroOrMore } yield h :: t
 
 
@@ -112,15 +112,14 @@ object Day12 extends App:
   case class Arr(underlying: List[Json])       extends Json
   case class Obj(underlying: Map[String,Json]) extends Json
 
-  def ints(json: Json, p: List[Json] => Boolean = _ => true): List[Int] =
-    def loop(json: Option[Json], acc: List[Int] = List.empty): List[Int] =
+  def ints(json: Json, predicate: Json => Boolean = _ => true): Int =
+    def loop(json: Json): Int =
       json match
-        case None => acc
-        case Some(Str(_))  => acc
-        case Some(Num(i))  => i :: acc
-        case Some(Arr(es)) => es.flatMap(e => loop(Some(e))) ++: acc
-        case Some(Obj(ms)) => if p(ms.values.toList) then ms.values.flatMap(m => loop(Some(m))) ++: acc else acc
-    loop(Some(json))
+        case Str(_)  => 0
+        case Num(i)  => i
+        case Arr(es) => es.foldLeft(0)((a,j) => a + loop(j))
+        case Obj(ms) => if ms.values.forall(predicate) then ms.values.foldLeft(0)((a,j) => a + loop(j)) else 0
+    loop(json)
 
   /** Part 1 */
 
@@ -128,12 +127,12 @@ object Day12 extends App:
     Json.parse(Source.fromResource(s"input$day.txt").mkString.trim)
 
   val start1: Long = System.currentTimeMillis
-  val answer1: Int = ints(input).sum
+  val answer1: Int = ints(input)
   println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
 
   /** Part 2 */
 
   val start2: Long = System.currentTimeMillis
-  val answer2: Int = ints(input, ms => !ms.contains(Str("red"))).sum
+  val answer2: Int = ints(input, _ != Str("red"))
   println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
