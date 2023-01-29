@@ -7,50 +7,54 @@ object Day07 extends App:
     this.getClass.getName.drop(3).init
 
   /** Modeling */
+  
+  type Wire = String
+  type Env  = Map[Wire,Int]
 
-  sealed trait Expr:
-    def args: List[String]
-    def ret: String
-    def run(wires: Map[String, Int]): Option[Int]
+  sealed trait Rule:
+    def args: List[Wire]
+    def ret: Wire
+    def run(env: Env): Option[Int]
 
-  case class Op2(op: Int => Int => Int, args: List[String], ret: String) extends Expr:
-    def run(wires: Map[String, Int]): Option[Int] =
-      val List(lhs, rhs) = args.map(wires.get)
+  case class Op2(op: Int => Int => Int, args: List[Wire], ret: Wire) extends Rule:
+
+    def run(env: Env): Option[Int] =
+      val List(lhs, rhs) = args.map(env.get)
       for {
         v1 <- lhs
         v2 <- rhs
       } yield op(v1)(v2)
 
-  case class Op1(op: Int => Int, args: List[String], ret: String) extends Expr:
-    def run(wires: Map[String, Int]): Option[Int] =
-      args.map(wires.get).headOption.flatten.map(op)
+  case class Op1(op: Int => Int, args: List[Wire], ret: Wire) extends Rule:
 
-  case class Val(value: Int, ret: String) extends Expr:
-    def args: List[String] =
+    def run(env: Env): Option[Int] =
+      args.map(env.get).headOption.flatten.map(op)
+
+  case class Val(value: Int, ret: Wire) extends Rule:
+
+    def args: List[Wire] =
       List.empty
-    def run(wires: Map[String, Int]): Option[Int] =
+
+    def run(env: Env): Option[Int] =
       Some(value)
 
   object Solver:
-    def solve(nodes: Seq[Expr], wire: String, setValueB: Option[Int] = None): Int =
-      @tailrec def fold(todo: Seq[Expr], wires: Map[String, Int] = Map.empty): Int =
-        wires.get(wire) match
+    def solve(rules: Seq[Rule], wire: Wire, setWireB: Option[Int] = None): Int =
+
+      @tailrec def fold(rules: Seq[Rule], env: Env = Map.empty): Int =
+        env.get(wire) match
           case Some(v) => v
-          case None => todo match
-            case Seq(expr, exprs*) => expr.run(wires) match
-              case Some(v) => fold(exprs, wires.updated(expr.ret, v))
-              case None => fold(exprs :+ expr, wires)
-            case _ => sys.error(s"undefined wire=$wire")
+          case None    => rules match
+            case Seq(rule, rest*) => rule.run(env) match
+              case Some(v)        => fold(rest, env.updated(rule.ret, v))
+              case None           => fold(rest :+ rule, env)
+            case _                => sys.error(s"undefined wire=$wire")
 
-      val puzzleInput: Seq[Expr] =
-        setValueB
-          .map(v => Val(v, "b") +: nodes.filterNot(_.ret == "b"))
-          .getOrElse(nodes)
-
+      val puzzleInput: Seq[Rule] = setWireB.map(v => Val(v, "b") +: rules.filterNot(_.ret == "b")).getOrElse(rules)
       fold(puzzleInput)
 
-  val input: IndexedSeq[Expr] =
-    def parser(s: String): Expr =
+  val input: IndexedSeq[Rule] =
+    def parser(s: Wire): Rule =
       s match
         case s"$lhs AND $rhs -> $ret" if lhs.toIntOption.isDefined
           => Op1(rv => lhs.toInt & rv, List(rhs), ret)
@@ -83,14 +87,12 @@ object Day07 extends App:
   /** Part 1 */
 
   val start1: Long = System.currentTimeMillis
-  val answer1: Int = Solver.solve(input, "a")
-
+  val answer1: Int = Solver.solve(rules = input, wire = "a")
   println(s"Answer day $day part 1: $answer1 [${System.currentTimeMillis - start1}ms]")
 
 
   /** Part 2 */
 
   val start2: Long = System.currentTimeMillis
-  val answer2: Int = Solver.solve(input, "a", setValueB = Some(answer1))
-
+  val answer2: Int = Solver.solve(rules = input, wire = "a", setWireB = Some(answer1))
   println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
