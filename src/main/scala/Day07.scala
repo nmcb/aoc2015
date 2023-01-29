@@ -35,7 +35,7 @@ object Day07 extends App:
     def args: List[Wire] =
       List.empty
 
-    def run(wires: Map[Wire, Int]): Option[Int] =
+    def run(env: Env): Option[Int] =
       Some(value)
 
   object Solver:

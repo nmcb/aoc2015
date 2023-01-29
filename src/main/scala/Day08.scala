@@ -11,9 +11,7 @@ object Day08 extends App:
   case class Str(quoted: String):
 
     def unquoted: String =
-      quoted
-        .drop(1)
-        .dropRight(1)
+      quoted.drop(1).dropRight(1)
 
     def unescaped: String =
       def loop(todo: List[Char], ret: String = ""): String =
