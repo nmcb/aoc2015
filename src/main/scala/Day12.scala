@@ -112,14 +112,14 @@ object Day12 extends App:
   case class Arr(underlying: List[Json])       extends Json
   case class Obj(underlying: Map[String,Json]) extends Json
 
-  def ints(json: Json, predicate: Json => Boolean = _ => true): Int =
-    def loop(json: Json): Int =
+  def solve(json: Json, objValueFilter: Json => Boolean = _ => true): Int =
+    def loop(acc: Int, json: Json): Int =
       json match
-        case Str(_)  => 0
-        case Num(i)  => i
-        case Arr(es) => es.foldLeft(0)((a,j) => a + loop(j))
-        case Obj(ms) => if ms.values.forall(predicate) then ms.values.foldLeft(0)((a,j) => a + loop(j)) else 0
-    loop(json)
+        case Str(_)  => acc
+        case Num(n)  => acc + n
+        case Arr(js) => js.foldLeft(acc)(loop)
+        case Obj(ms) => if ms.values.forall(objValueFilter) then ms.values.foldLeft(acc)(loop) else acc
+    loop(0, json)
 
   /** Part 1 */
 
@@ -127,12 +127,12 @@ object Day12 extends App:
     Json.parse(Source.fromResource(s"input$day.txt").mkString.trim)
 
   val start1: Long = System.currentTimeMillis
-  val answer1: Int = ints(input)
+  val answer1: Int = solve(input)
   println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
 
   /** Part 2 */
 
   val start2: Long = System.currentTimeMillis
-  val answer2: Int = ints(input, _ != Str("red"))
+  val answer2: Int = solve(input, _ != Str("red"))
   println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
