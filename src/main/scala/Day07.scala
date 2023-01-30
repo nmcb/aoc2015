@@ -54,7 +54,7 @@ object Day07 extends App:
       fold(puzzleInput)
 
   val input: IndexedSeq[Rule] =
-    def parser(s: String): Rule =
+    def parser(s: Wire): Rule =
       s match
         case s"$lhs AND $rhs -> $ret" if lhs.toIntOption.isDefined
           => Op1(rv => lhs.toInt & rv, List(rhs), ret)
