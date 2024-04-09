@@ -20,7 +20,7 @@ object Day03 extends App:
     private def moveToAndDeliver(loc: Area.Loc): Area =
       copy(start = loc, deliveries = deliveries.add(loc))
 
-    def next(cmd: Area.Command): Area =
+    infix def next(cmd: Area.Command): Area =
       cmd match
         case '>' => moveToAndDeliver(start.copy(x = start.x + 1))
         case '<' => moveToAndDeliver(start.copy(x = start.x - 1))
