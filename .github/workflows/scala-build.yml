@@ -1,25 +1,27 @@
-name: scala-build
+name: build
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+    {}
 
 jobs:
   build:
-
+    name: scala-build
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - name: java-setup
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: sbt
-      - uses: sbt/setup-sbt@v1
-      - name: sbt-test
-        shell: bash
-        run: sbt -v +test
+    - uses: actions/checkout@v4
+    - name: setup-java
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: sbt
+    - uses: sbt/setup-sbt@v1
+    - name: sbt-test
+      shell: bash
+      run: sbt -v +test
