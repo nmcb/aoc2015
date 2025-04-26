@@ -2,10 +2,11 @@ lazy val root =
   project
     .in(file("."))
     .settings( scalaVersion := "3.4.1"
+    .settings( scalaVersion := "3.6.4"
              , name         := "aoc-2015"
              , version      := "0.1.0"
              , libraryDependencies ++= Seq(
-                 "org.scalatest"  %% "scalatest"  % "3.2.18" % "test"
+                 "org.scalatest"  %% "scalatest"  % "3.2.19" % "test"
                )
              )
 
