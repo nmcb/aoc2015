@@ -5,37 +5,35 @@ object Day04 extends App:
   val day: String =
     this.getClass.getName.drop(3).init
 
-  val start1: Long =
-    System.currentTimeMillis
-
   val secret: String =
     "yzbqklnj"
 
   import java.security.MessageDigest
 
-  val MD5: MessageDigest =
-    MessageDigest.getInstance("MD5")
-
   def hashMD5(s: String): String =
-    def convertBytesToHex(bytes: Array[Byte]): String =
-      val sb = new StringBuilder
-      for (b <- bytes)(sb.append(String.format("%02x", Byte.box(b))))
-      sb.toString
-    convertBytesToHex(MD5.digest(s.getBytes))
+
+    val MD5 = MessageDigest.getInstance("MD5")
+
+    def bytesToHex(bytes: Array[Byte]): String =
+      val HEX_ARRAY: Array[Char] = "0123456789abcdef".toCharArray
+      val hexChars: Array[Char]  = new Array[Char](bytes.length * 2)
+      for j <- bytes.indices do
+        val v = bytes(j) & 0xFF
+        hexChars(j * 2)     = HEX_ARRAY(v >>> 4)
+        hexChars(j * 2 + 1) = HEX_ARRAY(v & 0x0F)
+      String(hexChars)
+
+    bytesToHex(MD5.digest(s.getBytes))
   
-  val answer1: Int =
+  def solve(prefix: String): Int =
     def loop(i: Int = 1): Int =
-      if (hashMD5(secret + i.toString).startsWith("00000")) i else loop(i + 1)
+      if (hashMD5(secret + i.toString).startsWith(prefix)) i else loop(i + 1)
     loop()
 
+  val start1: Long = System.currentTimeMillis
+  val answer1: Int = solve("00000")
   println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
-  val start2: Long =
-    System.currentTimeMillis
-
-  val answer2: Long =
-    def loop(l: Long = 1): Long =
-      if (hashMD5(secret + l.toString).startsWith("000000")) l else loop(l + 1)
-    loop()
-  
+  val start2: Long = System.currentTimeMillis
+  val answer2: Int = solve("000000")
   println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
