@@ -1,6 +1,3 @@
-import scala.annotation.*
-import scala.io.*
-
 object Day10 extends App:
 
   val day: String =
