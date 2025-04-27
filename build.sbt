@@ -19,3 +19,10 @@ scalacOptions ++= Seq(
   "-deprecation",
 //  "-explain",
 )
+
+Compile / run / fork := true
+Compile / run / javaOptions ++= Seq("-Xmx8G", "-Xss1G", "-XX:+UseG1GC")
+
+Test / fork := true
+Test / javaOptions ++= Seq("-Xmx8G", "-Xss1G", "-XX:+UseG1GC")
+
