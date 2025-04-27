@@ -9,40 +9,23 @@ object Day10 extends App:
   val input: String =
     "1113222113"
 
-  @tailrec def solve(n: Int, str: String): String =
+  def lookAndSay(s: String): String =
+    val result = new StringBuilder
+    var index  = 0
+    while index < s.length do
+      val char   = s(index)
+      val length = 1 + s.segmentLength(_ == char, index + 1)
+      result.append(length).append(char)
+      index += length
+    result.toString
 
-    val res: StringBuilder = StringBuilder()
-    var acc: StringBuilder = StringBuilder()
+  def solve(s: String, times: Int): Int =
+    Iterator.iterate(s)(lookAndSay).drop(times).next.length
 
-    @tailrec def build(todo: String, current: Char): String =
-
-      def encode(seq: String): String =
-        s"${seq.length}${seq.head.toString}"
-
-      if todo.nonEmpty then
-        if todo.head == current then
-          acc.addOne(current)
-          build(todo.tail, current)
-        else
-          res ++= encode(acc.result)
-          acc   = StringBuilder()
-          build(todo, todo.head)
-      else
-        (res ++= encode(acc.result)).result
-
-    if n == 0 then str else solve(n - 1, build(str, str.head))
-
-
-  /** Part 1 */
-
-  val start1: Long     = System.currentTimeMillis
-  val output40: String = solve(40, input)
-  val answer1: Int     = output40.length
+  val start1: Long = System.currentTimeMillis
+  val answer1: Int = solve(input, 40)
   println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
-
-  /** Part 2 */
-
   val start2: Long = System.currentTimeMillis
-  val answer2: Int = solve(10, output40).length
+  val answer2: Int = solve(input, 50)
   println(s"Answer day $day part 2: ${answer2} [${System.currentTimeMillis - start2}ms]")
