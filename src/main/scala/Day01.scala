@@ -17,7 +17,13 @@ object Day01 extends App:
 
   val answer1: Int =
     commands
-      .foldLeft(0)((f,c) => if (c == '(') f + 1 else if (c == ')') f - 1 else sys.error(s"unknow command: '$c'"))
+      .foldLeft(0): (f,c) =>
+        if c == '(' then
+          f + 1
+        else if c == ')' then
+          f - 1
+        else
+          sys.error(s"unknown command: '$c'")
   
   println(s"Answer day $day part 1: ${answer1} [${System.currentTimeMillis - start1}ms]")
 
@@ -26,9 +32,15 @@ object Day01 extends App:
 
   val answer2: Int =
     commands
-      .scanLeft(0)((f,c) => if (c == '(') f + 1 else if (c == ')') f - 1 else sys.error(s"unknow command: '$c'"))
+      .scanLeft(0): (f,c) =>
+        if c == '(' then
+          f + 1
+        else if c == ')' then
+          f - 1
+        else
+          sys.error(s"unknown command: '$c'")
       .zipWithIndex
-      .find((f,i) => f == -1)
+      .find((f,_) => f == -1)
       .getOrElse(sys.error("not found"))
       ._2
   
