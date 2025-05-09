@@ -3,14 +3,16 @@ object Day22 extends App:
   val day: String =
     this.getClass.getName.drop(3).init
 
-  case class Spell(cost: Int, duration: Int)
+  enum Spell(val cost: Int, val duration: Int):
+    case MagicMissile extends Spell(53, 1)
+    case Drain        extends Spell(73, 1)
+    case Shield       extends Spell(113, 6)
+    case Poison       extends Spell(173, 6)
+    case Recharge     extends Spell(229, 5)
 
-  val MagicMissile = Spell(53, 1)
-  val Drain        = Spell(73, 1)
-  val Shield       = Spell(113, 6)
-  val Poison       = Spell(173, 6)
-  val Recharge     = Spell(229, 5)
-  val Spells       = Set(MagicMissile, Drain, Shield, Poison, Recharge)
+  import Spell.*
+
+  val Spells = Set(MagicMissile, Drain, Shield, Poison, Recharge)
 
   case class Game(
     player: Int,

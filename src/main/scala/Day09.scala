@@ -48,7 +48,7 @@ object Day09 extends App:
       // init source distance and add to the queue
       distTo += from -> 0
       val sourceEdge = from -> distTo(from)
-      val queue = mutable.PriorityQueue[(Node, Int)](sourceEdge)(sortByDistance)
+      val queue = mutable.PriorityQueue[(Node, Int)](sourceEdge)(using sortByDistance)
 
       while (queue.nonEmpty)
         val (minDistNode, _) = queue.dequeue()
